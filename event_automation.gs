@@ -3,9 +3,9 @@ function onOpen(){
   const menu = ui.createMenu('Create Files');
   menu.addItem('Create New Event Folder', 'createEventFolder')
       .addItem('Create New Event Master Sheet', 'createMasterSheet')
-      .addItem('Create New Slides', 'createSlides')
-      .addItem('Create New Networking Sheet', 'createNetworkingSheet')
-      .addItem('Create Q&A Doc', 'createQAdoc')
+      //.addItem('Create New Slides', 'createSlides')
+      //.addItem('Create New Networking Sheet', 'createNetworkingSheet')
+      //.addItem('Create Q&A Doc', 'createQAdoc')
       .addItem('Create New Speaker Package Doc', 'createSpeakerPackage')
       .addItem('Create New Partner Package Doc', 'createPartnerPackage')
       .addItem('Create New Event Description Doc', 'createEventDescription')
