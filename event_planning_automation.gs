@@ -48,7 +48,7 @@ function createSlides() {
 
     //Create a copy of slides template
   var slidesTemplate = DriveApp.getFileById(slidesTemplateID);
-  var slidesCopy = slidesTemplate.makeCopy(date + series + speaker + topic + `Slides`, destinationFolder);
+  var slidesCopy = slidesTemplate.makeCopy(date + `_` + series + `_` + speaker + `_` + topic + `_` + `Slides`, destinationFolder);
   var slidesUrl = slidesCopy.getUrl();
     
   sheet.getRange(25, 5).setValue(slidesUrl);
