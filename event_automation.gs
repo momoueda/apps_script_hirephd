@@ -29,30 +29,41 @@ function createEventFolder() {
     
     sheet.getRange(index + 1, column + 1).setValue(url)
     sheet.getRange(index + 1, column + 2).setValue(newFolderID)
+
+   
+
   })
 }
+  
 
 function createMasterSheet(){
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1');
   const config = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('config');
   const rows = sheet.getDataRange().getValues();
   var column = rows[0].indexOf("event_master_link");
+  var destinationFolderColumn = rows[0].indexOf("folder_id");
   
   rows.forEach(function(row, index) {
     if (index === 0) return;
     if (row[column]) return;
     var masterTemplateID = config.getRange(2,2).getValues();;
-    var destinationFolder = DriveApp.getFolderById(`${row[10]}`);
+    var destinationFolder = DriveApp.getFolderById(`${row[destinationFolderColumn]}`);
 
     //Create a copy of event master sheets template
     var masterTemplate = DriveApp.getFileById(masterTemplateID);
     var masterCopy = masterTemplate.makeCopy(`HirePhD Event Master Document ${row[3]} ${row[8]}`, destinationFolder);
     var newMasterID = masterCopy.getId();
-
     var masterUrl = masterCopy.getUrl();
     
     sheet.getRange(index + 1, column + 1).setValue(masterUrl)
     sheet.getRange(index + 1, column + 2).setValue(newMasterID)
+
+    var newFile = SpreadsheetApp.openById(newMasterID); //add "Series" and "Topic" info into new master sheet
+    var newFileSheet = newFile.getSheetByName("Speaker Info & Agenda");
+    var series = newFileSheet.getRange("E10");
+    series.setValue(`${row[8]}`); //set value of cell
+
+
   })
 
 }
@@ -67,7 +78,7 @@ function createSlides() {
     if (index === 0) return;
     if (row[column]) return;
     var slidesTemplateID = config.getRange(3,2).getValues();;
-    var destinationFolder = DriveApp.getFolderById(`${row[10]}`);
+    var destinationFolder = DriveApp.getFolderById(`${row[11]}`);
 
     //Create a copy of slides template
     var slidesTemplate = DriveApp.getFileById(slidesTemplateID);
