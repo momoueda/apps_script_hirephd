@@ -62,7 +62,8 @@ function createMasterSheet(){
     var newFileSheet = newFile.getSheetByName("Speaker Info & Agenda");
     var series = newFileSheet.getRange("E10");
     series.setValue(`${row[8]}`); //set value of cell
-
+    var topic = newFileSheet.getRange("E11");
+    topic.setValue(`${row[7]}`); //set value of cell
 
   })
 
