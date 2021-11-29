@@ -5,6 +5,8 @@ function onOpen(){
         .addItem('Add Event Plan Master Sheet Link', 'addEventMasterLink')
         .addItem('Add Event Folder Link', 'addFolderLink')
         .addItem('Create New Slides', 'createSlides')
+        .addItem('Create New Questions Doc', 'createQAdoc')
+        .addItem('Create New Networking Doc', 'createNetworkingSheet')
         )
       .addToUi();
 }
@@ -52,5 +54,61 @@ function createSlides() {
   var slidesUrl = slidesCopy.getUrl();
     
   sheet.getRange(25, 5).setValue(slidesUrl);
+
+}
+
+function createQAdoc(){
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Main');
+  const config = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('config (leave untouched)');
+  const auto = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Automation (leave untouched)');
+  
+  //get folderId
+  var sheetId = SpreadsheetApp.getActiveSpreadsheet().getId();
+  var sheetFile = DriveApp.getFileById(sheetId);
+  var folderId = sheetFile.getParents().next().getId();
+
+  var qaTemplateID = config.getRange("B3").getValues();;
+  var destinationFolder = DriveApp.getFolderById(folderId);
+
+  //get values for date, series, speaker and topic
+  var date = auto.getRange("B1").getValues().toString();
+  var series = auto.getRange("B2").getValues().toString();
+  var speaker = auto.getRange("B3").getValues().toString();
+  var topic = auto.getRange("B4").getValues().toString();
+
+    //Create a copy of slides template
+  var qaTemplate = DriveApp.getFileById(qaTemplateID);
+  var qaCopy = qaTemplate.makeCopy(date + '_' + series + '_' + speaker + '_' + topic + '_' + `Questions Doc`, destinationFolder);
+  var qaUrl = qaCopy.getUrl();
+    
+  sheet.getRange(26, 5).setValue(qaUrl);
+
+}
+
+function createNetworkingSheet(){
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Main');
+  const config = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('config (leave untouched)');
+  const auto = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Automation (leave untouched)');
+  
+  //get folderId
+  var sheetId = SpreadsheetApp.getActiveSpreadsheet().getId();
+  var sheetFile = DriveApp.getFileById(sheetId);
+  var folderId = sheetFile.getParents().next().getId();
+
+  var networkingTemplateID = config.getRange("B2").getValues();;
+  var destinationFolder = DriveApp.getFolderById(folderId);
+
+  //get values for date, series, speaker and topic
+  var date = auto.getRange("B1").getValues().toString();
+  var series = auto.getRange("B2").getValues().toString();
+  var speaker = auto.getRange("B3").getValues().toString();
+  var topic = auto.getRange("B4").getValues().toString();
+
+    //Create a copy of slides template
+  var networkingTemplate = DriveApp.getFileById(networkingTemplateID);
+  var networkingCopy = networkingTemplate.makeCopy(date + '_' + series + '_' + speaker + '_' + topic + '_' + `Questions Doc`, destinationFolder);
+  var networkingUrl = networkingCopy.getUrl();
+    
+  sheet.getRange(27, 5).setValue(networkingUrl);
 
 }
