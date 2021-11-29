@@ -59,10 +59,14 @@ function createMasterSheet(){
     sheet.getRange(index + 1, column + 2).setValue(newMasterID)
 
     var newFile = SpreadsheetApp.openById(newMasterID); //add "Series" and "Topic" info into new master sheet
-    var newFileSheet = newFile.getSheetByName("Speaker Info & Agenda");
-    var series = newFileSheet.getRange("E10");
+    var newFileSheet = newFile.getSheetByName("Automation (leave untouched)");
+    var date = newFileSheet.getRange("B1");
+    date.setValue(`${row[3]}`); //set value of cell
+    var series = newFileSheet.getRange("B2");
     series.setValue(`${row[8]}`); //set value of cell
-    var topic = newFileSheet.getRange("E11");
+    var speaker = newFileSheet.getRange("B3");
+    speaker.setValue(`${row[5]}`); //set value of cell
+    var topic = newFileSheet.getRange("B4");
     topic.setValue(`${row[7]}`); //set value of cell
 
   })
