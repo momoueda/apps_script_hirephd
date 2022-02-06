@@ -62,6 +62,8 @@ function createMasterSheet(){
     speaker.setValue(`${row[5]}`); //set value of cell
     var topic = newFileSheet.getRange("B4");
     topic.setValue(`${row[7]}`); //set value of cell
+    var topic = newFileSheet.getRange("B5");
+    topic.setValue(`${row[9]}`); //set value of cell
 
   })
 
