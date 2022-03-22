@@ -62,7 +62,8 @@ function buildAlert(data) {
 }
 
 function sendAlert(payload) {
-  const webhook = "https://hooks.slack.com/services/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"; 
+  const config = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('config (leave untouched)');
+  var webhook = config.getRange("B11").getValues();
   var options = {
     "method": "post", 
     "contentType": "application/json", 
