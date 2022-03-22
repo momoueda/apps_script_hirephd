@@ -13,7 +13,93 @@ function onOpen(){
         .addItem('Create New Event Description Doc', 'createEventDescription')
         .addItem('Create New Feedback Form', 'createFeedbackForm')
       )
+      .addItem('Import Speaker Info', 'speakerInfo')
+      .addItem('Notify Team in Slack', 'sendSlack')
       .addToUi();
+
+}
+
+function sendSlack(){
+  const ss = SpreadsheetApp.getActive();
+  let data = ss.getSheetByName('Speaker Info & Agenda').getRange("E5:E8").getValues();
+  let payload = buildAlert(data);
+  sendAlert(payload);
+}
+
+function buildAlert(data) {
+  let speakerName = data[3][0];
+  let eventMonth = data[0][0]
+  
+  let payload = {
+    "blocks": [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": ":bell: *Speaker Info Imported* :bell:"
+        }
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Import of speaker info completed for " + eventMonth + "'s event"
+        }
+      },
+       {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Speaker name: " + speakerName
+        }
+      }
+    ]
+  };
+  return payload;
+}
+
+function sendAlert(payload) {
+  const webhook = "https://hooks.slack.com/services/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"; 
+  var options = {
+    "method": "post", 
+    "contentType": "application/json", 
+    "muteHttpExceptions": true, 
+    "payload": JSON.stringify(payload) 
+  };
+  
+  try {
+    UrlFetchApp.fetch(webhook, options);
+  } catch(e) {
+    Logger.log(e);
+  }
+}
+
+function speakerInfo(){
+  const speakerSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Speaker form entry');
+  const config = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('config (leave untouched)');
+  const auto = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Automation (leave untouched)');
+  var responsesID = config.getRange("B9").getValues();;
+  var responsesSheet = SpreadsheetApp.openById(responsesID).getSheetByName('Form Responses 1');
+  var responsesDataRange = responsesSheet.getDataRange();
+  var values = responsesDataRange.getValues();
+  var email = auto.getRange("B5").getValues();
+  var speakerRowNum;
+
+  for (var i = 0; i < values.length; i++)
+  {
+    if (values[i][3] == email)
+    {
+      speakerRowNum = i+1;
+      break;
+    }
+  }
+ 
+  var speakerRow = responsesSheet.getRange(speakerRowNum,1,1,20).getValues();
+  speakerSheet.getRange(2,1,1,20).setValues(speakerRow);
+
 }
 
 function addEventMasterLink(){
@@ -44,7 +130,7 @@ function createSlides() {
   var sheetFile = DriveApp.getFileById(sheetId);
   var folderId = sheetFile.getParents().next().getId();
 
-  var slidesTemplateID = config.getRange(1,2).getValues();;
+  var slidesTemplateID = config.getRange(1,2).getValues();
   var destinationFolder = DriveApp.getFolderById(folderId);
 
   //get values for date, series, speaker and topic
@@ -58,7 +144,7 @@ function createSlides() {
   var slidesCopy = slidesTemplate.makeCopy(`Slides_` + date + `_` + series + `_` + speaker + `_` + topic, destinationFolder);
   var slidesUrl = slidesCopy.getUrl();
     
-  sheet.getRange(25, 5).setValue(slidesUrl);
+  sheet.getRange("E28").setValue(slidesUrl);
 
 }
 
@@ -86,7 +172,7 @@ function createQAdoc(){
   var qaCopy = qaTemplate.makeCopy(`Questions_Doc_`+ date + '_' + series + '_' + speaker + '_' + topic, destinationFolder);
   var qaUrl = qaCopy.getUrl();
     
-  sheet.getRange(26, 5).setValue(qaUrl);
+  sheet.getRange("E29").setValue(qaUrl);
 
 }
 
@@ -114,7 +200,7 @@ function createNetworkingSheet(){
   var networkingCopy = networkingTemplate.makeCopy(`Networking_Doc_` + date + '_' + series + '_' + speaker + '_' + topic, destinationFolder);
   var networkingUrl = networkingCopy.getUrl();
     
-  sheet.getRange(27, 5).setValue(networkingUrl);
+  sheet.getRange("E30").setValue(networkingUrl);
 
 }
 
@@ -222,7 +308,7 @@ function createFeedbackForm(){
   var form = FormApp.openById(feedbackFormTemplateID);
   var feedbackFormUrl = form.getPublishedUrl();
     
-  sheet.getRange(29, 5).setValue(feedbackFormUrl);
+  sheet.getRange("E32").setValue(feedbackFormUrl);
 }
 
 
